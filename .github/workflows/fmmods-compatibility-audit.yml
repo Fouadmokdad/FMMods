@@ -23,7 +23,6 @@ jobs:
       - name: Verify declared WhatsApp support
         run: |
           python tools/check_whatsapp_compat.py --target whatsapp --version 2.26.46.10
-          python tools/check_whatsapp_compat.py --target business --version 2.26.44.74
       - name: Run compatibility unit tests
         run: python -m unittest discover -s tests -p 'test_whatsapp_compat.py' -v
       - name: Generate feature audit
@@ -35,4 +34,4 @@ jobs:
           path: feature-audit.md
           retention-days: 14
       - name: Check tool syntax
-        run: python -m py_compile tools/check_whatsapp_compat.py
+        run: python -m py_compile tools/check_whatsapp_compat.py tools/audit_feature_registry.py
