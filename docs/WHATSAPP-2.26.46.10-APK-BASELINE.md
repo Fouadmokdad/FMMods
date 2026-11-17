@@ -9,3 +9,12 @@ Source: user-supplied file `WhatsApp_V2.26.46.10.apk` (not committed to the repo
 - 3 bundled native .so entries
 
 These are archive-level checks, **not** a manifest package/version verification, runtime compatibility test, or validation of obfuscated method signatures. The APK filename is not proof of package metadata. Do not add 2.26.46.10 to the supported version array or enable hooks until manifest identity, DexKit targets, and runtime behavior are verified. Next: use Android SDK APK inspection tools to confirm package/version and compare DexKit method/class matches for each feature, then perform staged device testing.
+## Verified binary manifest identity
+
+Parsed the supplied APK's Android binary XML `AndroidManifest.xml` manifest start-element attributes (not just archive strings or filename):
+
+- `package = com.whatsapp` — regular WhatsApp
+- `android:versionName = 2.26.46.10`
+- `android:versionCode = 264601004`
+
+This verifies the APK identity and version. It does **not** establish DexKit target compatibility or feature functionality. Maintain fail-closed behavior until hook matching and runtime checks succeed.
