@@ -75,7 +75,7 @@ object ScopeHook : YukiBaseHooker() {
                         try {
                             val method = args[0] as? String ?: return@before
                             val arg = args[1] as? String ?: return@before
-                            if (method != "WaEnhancer") return@before
+                            if (method != "FMMods") return@before
                             val (authority, providerMethod) = when (arg) {
                                 "getHookBinder" -> "hookprovider" to "getHookBinder"
                                 "getPrefs" -> "preferences" to PrefsProvider.METHOD_GET_ALL
