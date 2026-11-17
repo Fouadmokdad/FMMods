@@ -93,6 +93,9 @@ object FeatureLoader : YukiBaseHooker() {
         Feature.DEBUG = pref.getBoolean("enablelogs", true)
         Utils.xprefs = pref
 
+        supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
+        checkVersionSupport(versionName)
+
         if (pref.getBoolean("bootloader_spoofer_custom", false)) {
             HookBL.hook(this, loader, pref)
             YukiLog.log("Custom KeyBox is Injected")
@@ -101,7 +104,6 @@ object FeatureLoader : YukiBaseHooker() {
         YukiLog.log(versionName)
         currentVersion = versionName
         CrashHandler.install(application, versionName)
-        supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
         application.registerActivityLifecycleCallbacks(WaCallback())
         ModuleReceivers.register(application)
 
@@ -109,8 +111,6 @@ object FeatureLoader : YukiBaseHooker() {
         UnobfuscatorCache.init(application)
         SharedPreferencesWrapper.hookInit(this, application.classLoader)
         ReflectionUtils.initCache(application)
-
-        checkVersionSupport(application, pref, versionName)
 
         initComponents(loader, pref)
         loadFeatures(loader, pref, versionName)
@@ -144,11 +144,7 @@ object FeatureLoader : YukiBaseHooker() {
         }
     }
 
-    private fun checkVersionSupport(
-        application: Application,
-        pref: SharedPreferences,
-        versionName: String
-    ) {
+    private fun checkVersionSupport(versionName: String) {
         val isSupported = supportedVersions.any { versionName.startsWith(it.replace(".xx", "")) }
         if (isSupported) return
 
