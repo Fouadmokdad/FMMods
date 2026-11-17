@@ -53,12 +53,12 @@ jobs:
         run: |
           mkdir -p release-apk
           find app/build/outputs/apk -type f -name '*.apk' -print
-          APK=$(find app/build/outputs/apk -type f -name '*whatsapp*debug*.apk' | head -n 1)
-          if [ -z "$APK" ]; then
-            echo "Regular WhatsApp APK not found" >&2
+          mapfile -d '' APKS < <(find app/build/outputs/apk/whatsapp/debug -maxdepth 1 -type f -name '*.apk' -print0)
+          if [ "${#APKS[@]}" -ne 1 ]; then
+            echo "Expected exactly one regular WhatsApp APK, found ${#APKS[@]}" >&2
             exit 1
           fi
-          cp "$APK" release-apk/FMMods-WhatsApp-debug.apk
+          cp "${APKS[0]}" release-apk/FMMods-WhatsApp-debug.apk
           test "$(find release-apk -type f -name '*.apk' | wc -l)" -eq 1
       - name: Upload WhatsApp APK
         if: success()
