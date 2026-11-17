@@ -6,6 +6,7 @@ on:
       - research/waenhancerx-migration
     paths:
       - 'tools/check_whatsapp_compat.py'
+      - 'tools/audit_feature_registry.py'
       - 'tests/test_whatsapp_compat.py'
       - 'app/src/main/res/**/arrays.xml'
       - '.github/workflows/fmmods-compatibility-audit.yml'
@@ -25,5 +26,13 @@ jobs:
           python tools/check_whatsapp_compat.py --target business --version 2.26.44.74
       - name: Run compatibility unit tests
         run: python -m unittest discover -s tests -p 'test_whatsapp_compat.py' -v
+      - name: Generate feature audit
+        run: python tools/audit_feature_registry.py --version 2.26.46.10 --output feature-audit.md
+      - name: Upload feature audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: FMMods-feature-audit
+          path: feature-audit.md
+          retention-days: 14
       - name: Check tool syntax
         run: python -m py_compile tools/check_whatsapp_compat.py
