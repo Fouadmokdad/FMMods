@@ -31,12 +31,12 @@ android {
         create("business") {
             dimension = "version"
             applicationIdSuffix = ".w4b"
-            resValue("string", "app_name", "Wa Enhancer Business")
+            resValue("string", "app_name", "FMMods Business")
         }
     }
 
     defaultConfig {
-        applicationId = "com.wmods.wppenhacer"
+        applicationId = "com.fmmods.app"
         minSdk = 28
         //noinspection OldTargetApi
         targetSdk = 34
@@ -144,8 +144,8 @@ android {
 androidComponents {
     onVariants { variant ->
         val appName = when (variant.flavorName) {
-            "business" -> "WaEnhancer-Business"
-            else -> "WaEnhancer"
+            "business" -> "FMMods-Business"
+            else -> "FMMods"
         }
         variant.outputs.forEach { output ->
             output.outputFileName.set(output.versionName.map { "$appName-$it.apk" })
