@@ -29,50 +29,10 @@ class UpdateChecker(private val mActivity: Activity) : Runnable {
     }
 
     override fun run() {
-        try {
-            val request = okhttp3.Request.Builder()
-                .url(LATEST_RELEASE_API)
-                .build()
-
-            val hash: String
-            val changelog: String
-            val publishedAt: String
-
-            httpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return
-
-                val content = response.body.string()
-                val release = JSONObject(content)
-                val tagName = release.optString("tag_name", "")
-
-                if (tagName.isBlank()) return
-
-                hash = tagName.split("-")[1].trim()
-                changelog = release.optString("body", "No changelog available.").trim()
-                publishedAt = release.optString("published_at", "")
-            }
-
-            if (hash.isBlank()) return
-
-            val packageInfo = try {
-                mActivity.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0)
-            } catch (e: Exception) {
-                YukiLog.log(e)
-                return
-            }
-
-            val isNewVersion =
-                !packageInfo.versionName!!.lowercase().contains(hash.lowercase().trim())
-            val isIgnored = WppCore.getPrivString("ignored_version", "") == hash
-
-            if (isNewVersion && !isIgnored) {
-                mActivity.runOnUiThread {
-                    showUpdateDialog(hash, changelog, publishedAt)
-                }
-            }
-        } catch (e: Exception) {
-            YukiLog.log(e)
-        }
+        // FMMods has no independently managed release feed yet.
+        // Never query upstream WaEnhancer or prompt users to install its APK.
+        // Keep this entry point inert until an FMMods-specific updater is implemented.
+        return
     }
 
     private fun showUpdateDialog(hash: String, changelog: String, publishedAt: String) {
