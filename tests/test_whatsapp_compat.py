@@ -25,6 +25,13 @@ class CompatibilityAuditTests(unittest.TestCase):
         self.assertNotIn("api.github.com/repos/Dev4Mod", source)
         self.assertNotIn("httpClient.newCall", source)
 
+    def test_home_does_not_show_upstream_update_card(self):
+        source = (Path(__file__).resolve().parents[1] /
+                  "app/src/main/java/com/wmods/wppenhacer/ui/fragments/HomeFragment.kt").read_text()
+        self.assertIn("binding.updateCard.visibility = View.GONE", source)
+        self.assertNotIn("        checkForUpdates()\\n", source)
+        self.assertNotIn('Utils.openLink(requireActivity(), "https://t.me/waenhancher")', source)
+
     def test_version_prefix_boundary(self):
         self.assertTrue(matches("2.26.44.74", ["2.26.44.xx"]))
         self.assertFalse(matches("2.26.440.1", ["2.26.44.xx"]))
