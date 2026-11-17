@@ -84,6 +84,11 @@ object FeatureLoader : YukiBaseHooker() {
         sourceDir: String,
         versionName: String
     ) {
+        // Check compatibility before opening DexKit or touching host internals.
+        // An unsupported build must not execute any FMMods feature hooks.
+        supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
+        checkVersionSupport(versionName)
+
         check(Unobfuscator.initWithPath(sourceDir)) { "Unobfuscator not initialized" }
         mApp = application
         Utils.appClassLoader = loader
@@ -92,9 +97,6 @@ object FeatureLoader : YukiBaseHooker() {
         val pref = createPreferences(application)
         Feature.DEBUG = pref.getBoolean("enablelogs", true)
         Utils.xprefs = pref
-
-        supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
-        checkVersionSupport(versionName)
 
         if (pref.getBoolean("bootloader_spoofer_custom", false)) {
             HookBL.hook(this, loader, pref)
