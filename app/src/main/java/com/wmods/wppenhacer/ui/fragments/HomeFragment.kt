@@ -122,17 +122,15 @@ class HomeFragment : BaseFragment() {
             resetConfigs(requireContext())
         }
 
-        binding.updateCard.setOnClickListener { view ->
-            animateClick(view)
-            Utils.openLink(requireActivity(), "https://t.me/waenhancher")
-        }
+        // FMMods has no release feed yet: hide the inherited upstream update card.
+        binding.updateCard.visibility = View.GONE
 
         binding.diagBtn.setOnClickListener { view ->
             animateClick(view)
             showDiagnosticsDialog()
         }
 
-        checkForUpdates()
+        // Do not query the upstream WaEnhancer release feed.
         startCardAnimations()
 
         return binding.root
@@ -162,11 +160,7 @@ class HomeFragment : BaseFragment() {
             binding.infoCard.startAnimation(fadeIn)
         }, 300)
 
-        binding.updateCard.postDelayed({
-            if (!isAdded || _binding == null) return@postDelayed
-            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
-            binding.updateCard.startAnimation(anim)
-        }, 400)
+
     }
 
     private fun animateClick(view: View) {
