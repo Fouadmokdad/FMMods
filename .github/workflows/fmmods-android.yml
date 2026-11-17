@@ -31,10 +31,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # GitHub-hosted Ubuntu runners already include Android SDK command-line tools.
+      # Avoid setup-android@v3 requesting the retired 'tools' SDK package.
       - name: Install Android SDK packages
         run: |
+          yes | sdkmanager --licenses > /dev/null || true
           sdkmanager --install "platforms;android-37" "cmake;3.22.1" "ndk;28.2.13676358"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
