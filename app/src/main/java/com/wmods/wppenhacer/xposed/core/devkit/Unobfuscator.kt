@@ -245,12 +245,21 @@ object Unobfuscator {
     @JvmStatic
     fun loadSharedMessageProcessorHandlePlaintextMethod(classLoader: ClassLoader): Method {
         return UnobfuscatorCache.getInstance().getMethod(classLoader) {
-            findFirstMethodUsingStrings(
+            // WhatsApp 2.26.46.10 contains two methods referencing this anchor.
+            // Select the plaintext handler by its observed signature instead of
+            // silently hooking whichever DexKit result happens to come first.
+            val candidates = findAllMethodUsingStrings(
                 classLoader,
                 StringMatchType.Contains,
                 "SharedMessageProcessor/handlePlaintext"
-            )
-                ?: throw NoSuchMethodException("SharedMessageProcessor/handlePlaintext method not found")
+            ).filter { method ->
+                method.returnType == Void.TYPE &&
+                    method.parameterTypes.any { it == ByteArray::class.java }
+            }
+            candidates.singleOrNull()
+                ?: throw NoSuchMethodException(
+                    "Expected exactly one void plaintext handler with byte[] parameter; found ${candidates.size}"
+                )
         }
     }
 
