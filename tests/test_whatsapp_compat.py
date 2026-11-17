@@ -18,6 +18,14 @@ class CompatibilityAuditTests(unittest.TestCase):
     def test_business_244_is_declared(self):
         self.assertTrue(matches("2.26.44.74", arrays()["supported_versions_business"]))
 
+    def test_upstream_update_checker_disabled(self):
+        source = (Path(__file__).resolve().parents[1] /
+                  "app/src/main/java/com/wmods/wppenhacer/UpdateChecker.kt").read_text()
+        run_body = source.split("override fun run() {", 1)[1].split(
+            "private fun showUpdateDialog(", 1)[0]
+        self.assertNotIn("httpClient.newCall", run_body)
+        self.assertNotIn("showUpdateDialog(", run_body)
+
     def test_version_prefix_boundary(self):
         self.assertTrue(matches("2.26.44.74", ["2.26.44.xx"]))
         self.assertFalse(matches("2.26.440.1", ["2.26.44.xx"]))
