@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   debug-apk:
-    name: Build WhatsApp and Business debug APKs
+    name: Build WhatsApp debug APK only
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -45,15 +45,15 @@ jobs:
           ls -1 "${ANDROID_HOME}/platforms"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Build both debug variants
+      - name: Build WhatsApp debug APK
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon :app:assembleWhatsappDebug :app:assembleBusinessDebug
+          ./gradlew --no-daemon :app:assembleWhatsappDebug
       - name: Upload test APKs
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: FMMods-debug-apks
-          path: app/build/outputs/apk/**/*.apk
+          name: FMMods-WhatsApp-debug-apk
+          path: app/build/outputs/apk/whatsapp/debug/*.apk
           if-no-files-found: error
           retention-days: 14
