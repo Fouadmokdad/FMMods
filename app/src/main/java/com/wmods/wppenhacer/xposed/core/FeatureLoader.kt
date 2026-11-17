@@ -84,15 +84,15 @@ object FeatureLoader : YukiBaseHooker() {
         sourceDir: String,
         versionName: String
     ) {
-        // Check compatibility before opening DexKit or touching host internals.
-        // An unsupported build must not execute any FMMods feature hooks.
-        supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
+        // Resource arrays belong to FMMods, not the WhatsApp host package.
+        // Resolve module context before reading the compatibility list.
+        initializeModuleContext(application)
+        supportedVersions = moduleContext.resources.getStringArray(supportedVersionsRes(application)).toList()
         checkVersionSupport(versionName)
 
         check(Unobfuscator.initWithPath(sourceDir)) { "Unobfuscator not initialized" }
         mApp = application
         Utils.appClassLoader = loader
-        initializeModuleContext(application)
 
         val pref = createPreferences(application)
         Feature.DEBUG = pref.getBoolean("enablelogs", true)
