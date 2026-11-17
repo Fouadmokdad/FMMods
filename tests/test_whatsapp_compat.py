@@ -46,6 +46,17 @@ class CompatibilityAuditTests(unittest.TestCase):
         self.assertIn("ByteArray::class.java", method)
         self.assertIn("candidates.singleOrNull()", method)
 
+    def test_unsupported_host_fails_before_dexkit(self):
+        source = (Path(__file__).resolve().parents[1] /
+                  "app/src/main/java/com/wmods/wppenhacer/xposed/core/FeatureLoader.kt").read_text()
+        load_start = source.index("    private fun load(")
+        load_end = source.index("    private fun createPreferences(", load_start)
+        load_body = source[load_start:load_end]
+        self.assertLess(load_body.index("checkVersionSupport(versionName)"),
+                        load_body.index("Unobfuscator.initWithPath(sourceDir)"))
+        self.assertNotIn("bypass_version_check", source)
+        self.assertNotIn("disableExpirationVersion(application.classLoader)", source)
+
     def test_version_prefix_boundary(self):
         self.assertTrue(matches("2.26.44.74", ["2.26.44.xx"]))
         self.assertFalse(matches("2.26.440.1", ["2.26.44.xx"]))
