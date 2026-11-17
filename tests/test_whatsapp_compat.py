@@ -35,6 +35,17 @@ class CompatibilityAuditTests(unittest.TestCase):
         self.assertEqual(len(items), len({name for name, _ in items}))
         self.assertTrue(all(str(path).endswith(".kt") for _, path in items))
 
+    def test_plaintext_hook_requires_unique_signature(self):
+        source = (Path(__file__).resolve().parents[1] /
+                  "app/src/main/java/com/wmods/wppenhacer/xposed/core/devkit/Unobfuscator.kt").read_text()
+        start = source.index("fun loadSharedMessageProcessorHandlePlaintextMethod(")
+        end = source.index("fun loadReceiptMethod(", start)
+        method = source[start:end]
+        self.assertIn("findAllMethodUsingStrings(", method)
+        self.assertIn("method.returnType == Void.TYPE", method)
+        self.assertIn("ByteArray::class.java", method)
+        self.assertIn("candidates.singleOrNull()", method)
+
     def test_version_prefix_boundary(self):
         self.assertTrue(matches("2.26.44.74", ["2.26.44.xx"]))
         self.assertFalse(matches("2.26.440.1", ["2.26.44.xx"]))
