@@ -26,3 +26,17 @@ Status: source inspection only; no WaEnhancerX source imported and no APK built.
 4. Build CI debug APK, inspect manifest/signature, then test LSPosed injection on WhatsApp 2.26.46.10 before release.
 
 Do not merge into master, publish APKs, or claim device compatibility until verified.
+
+## Additional source audit (2026-11-18)
+Official documentation: https://github.com/WaEnhancerX/WaEnhancerX/blob/main/docs/ARCHITECTURE.md and https://github.com/WaEnhancerX/WaEnhancerX/blob/main/CONTRIBUTING.md
+
+- The public source includes MainHook.java, VersionGuard.kt and FeatureRegistry.java; compatibility is evaluated before feature-registry initialization.
+- Xposed module uses assets/xposed_init, and the manager's own package may also be included in its recommended LSPosed scope. Changing the app ID therefore requires auditing both self-target and WhatsApp target paths.
+- Public source QA can run independently of the private licensing module. A passing source QA is **not** an APK build or device compatibility test.
+- The documented source build requires an authorized compatible licensing revision and the original signing certificate. The licensing submodule URL alone does not grant access.
+- Do not replace the existing FMMods source tree with an incomplete copy of upstream. Instead, keep this branch for analysis, and migrate only when a lawful independently signed build path is established.
+
+## Next development gate
+- Seek an officially supported independent-build flavor from maintainers, or identify a self-contained implementation based solely on public source that does not depend on proprietary licensing.
+- Audit VersionGuard version matching and diagnostics using public sources; document exact behavior before changing host-version rules.
+- Keep original FMMods debug APK and working source available as rollback; do not enable both LSPosed modules simultaneously.
