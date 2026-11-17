@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - dev/fmmods-branding
+      - research/waenhancerx-migration
     paths:
       - 'app/**'
       - 'gradle/**'
