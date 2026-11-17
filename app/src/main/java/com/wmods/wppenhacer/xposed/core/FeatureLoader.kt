@@ -152,15 +152,13 @@ object FeatureLoader : YukiBaseHooker() {
         val isSupported = supportedVersions.any { versionName.startsWith(it.replace(".xx", "")) }
         if (isSupported) return
 
-        disableExpirationVersion(application.classLoader)
-        if (!pref.getBoolean("bypass_version_check", false)) {
-            throw Exception(
-                """
-                Unsupported version: $versionName
-                Only the function of ignoring the expiration of the WhatsApp version has been applied!
-                """.trimIndent()
-            )
-        }
+        // Do not install hooks on unverified WhatsApp builds, even if the
+        // legacy bypass_version_check preference was enabled previously.
+        // This also avoids changing expiration behavior on unsupported hosts.
+        throw IllegalStateException(
+            "FMMods does not support WhatsApp $versionName yet. " +
+                "Hooks were not installed; use a verified supported version."
+        )
     }
 
     @JvmStatic
