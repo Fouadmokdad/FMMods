@@ -49,11 +49,22 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew --no-daemon :app:assembleWhatsappDebug
-      - name: Upload test APKs
+      - name: Stage only regular WhatsApp APK
+        run: |
+          mkdir -p release-apk
+          find app/build/outputs/apk -type f -name '*.apk' -print
+          APK=$(find app/build/outputs/apk -type f -name '*whatsapp*debug*.apk' | head -n 1)
+          if [ -z "$APK" ]; then
+            echo "Regular WhatsApp APK not found" >&2
+            exit 1
+          fi
+          cp "$APK" release-apk/FMMods-WhatsApp-debug.apk
+          test "$(find release-apk -type f -name '*.apk' | wc -l)" -eq 1
+      - name: Upload WhatsApp APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: FMMods-WhatsApp-debug-apk
-          path: app/build/outputs/apk/whatsapp/debug/*.apk
+          path: release-apk/FMMods-WhatsApp-debug.apk
           if-no-files-found: error
           retention-days: 14
