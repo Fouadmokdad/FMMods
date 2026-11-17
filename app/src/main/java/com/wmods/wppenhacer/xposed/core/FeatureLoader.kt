@@ -193,9 +193,8 @@ object FeatureLoader : YukiBaseHooker() {
         WppCore.addListenerActivity { activity, type ->
             if (type != WppCore.ActivityChangeState.ChangeType.RESUMED) return@addListenerActivity
             askRestartIfNeeded(activity)
-            if (App.isOriginalPackage && pref.getBoolean("update_check", true)) {
-                scheduleUpdateCheck(activity)
-            }
+            // FMMods: upstream WaEnhancer update prompts are disabled until
+            // a dedicated FMMods release channel is implemented.
         }
     }
 
