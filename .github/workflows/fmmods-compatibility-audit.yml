@@ -8,6 +8,8 @@ on:
       - 'tools/check_whatsapp_compat.py'
       - 'tools/audit_feature_registry.py'
       - 'tests/test_whatsapp_compat.py'
+      - 'app/src/main/java/com/wmods/wppenhacer/xposed/core/FeatureLoader.kt'
+      - 'app/src/main/java/com/wmods/wppenhacer/xposed/core/devkit/Unobfuscator.kt'
       - 'app/src/main/res/**/arrays.xml'
       - '.github/workflows/fmmods-compatibility-audit.yml'
 permissions:
