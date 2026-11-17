@@ -38,17 +38,10 @@ jobs:
           packages: 'platform-tools'
       - name: Install Android SDK packages
         run: |
-          echo "Available SDK platforms:"
-          sdkmanager --list --channel=3 | grep -E 'platforms;android-|cmake;3\\.22\\.1|ndk;28\\.2\\.13676358' | head -80 || true
-          echo "Installed SDK platforms:"
-          ls -la "${ANDROID_HOME}/platforms" || true
-          echo "Required project compileSdk: 37"
-          if ! sdkmanager --list --channel=3 | grep -q 'platforms;android-37[[:space:]]'; then
-            echo "::error::Android SDK platform 37 is not available in the configured SDK repository. Review the available platform list above before changing compileSdk."
-            exit 1
-          fi
-          sdkmanager --channel=3 --install "platforms;android-37"
-          sdkmanager --install "cmake;3.22.1" "ndk;28.2.13676358"
+          # API 37 SDK is published as android-37.0, not android-37.
+          sdkmanager --channel=3 --install "platforms;android-37.0" "cmake;3.22.1" "ndk;28.2.13676358"
+          echo "Installed Android SDK platforms:"
+          ls -1 "${ANDROID_HOME}/platforms"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Build both debug variants
