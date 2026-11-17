@@ -6,6 +6,7 @@ on:
       - research/waenhancerx-migration
     paths:
       - 'tools/check_whatsapp_compat.py'
+      - 'tests/test_whatsapp_compat.py'
       - 'app/src/main/res/**/arrays.xml'
       - '.github/workflows/fmmods-compatibility-audit.yml'
 permissions:
@@ -22,5 +23,7 @@ jobs:
         run: |
           python tools/check_whatsapp_compat.py --target whatsapp --version 2.26.46.10
           python tools/check_whatsapp_compat.py --target business --version 2.26.44.74
+      - name: Run compatibility unit tests
+        run: python -m unittest discover -s tests -p 'test_whatsapp_compat.py' -v
       - name: Check tool syntax
         run: python -m py_compile tools/check_whatsapp_compat.py
