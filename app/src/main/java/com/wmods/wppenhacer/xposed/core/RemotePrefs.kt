@@ -50,7 +50,7 @@ class RemotePrefs(
 
     private fun loadProvider(): Map<String, Any?>? = try {
         val result = runCatching {
-            resolver.call(Settings.System.CONTENT_URI, "WaEnhancer", "getPrefs", null)
+            resolver.call(Settings.System.CONTENT_URI, "FMMods", "getPrefs", null)
         }.getOrNull() ?: resolver.call(URI, PrefsProvider.METHOD_GET_ALL, null, null)
         val map = HashMap<String, Any?>()
         result?.getBundle(PrefsProvider.KEY_VALUES)?.let { values ->
